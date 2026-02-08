@@ -88,28 +88,28 @@
             <h1 class="text-5xl mb-6 font-normal text-[#2C2C2C] italic">RITMOS</h1>
             
             <p class="text-gray-600 mb-8 font-light leading-relaxed text-sm">
-                <br>
+                Bienvenidxs. <br>
                 La casa cambia cuando cambia la forma en que la habitas. Deja tus datos para recibir la <strong>Guía Completa</strong> y comenzar tu viaje.
             </p>
 
-            <!-- MENSAJE DE ÉXITO (Oculto al principio) -->
+            <!-- MENSAJE DE ÉXITO -->
             <div id="success-message" class="hidden py-10 fade-in">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-[#6B705C] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <h3 class="text-3xl italic text-[#2C2C2C] mb-2">¡Gracias!</h3>
-                <p class="text-sm text-gray-600">Hemos recibido tus datos correctamente.<br>Revisa tu correo pronto.</p>
+                <p class="text-sm text-gray-600">Estamos preparando tu descarga...<br>Si no se abre en unos segundos, revisa tu carpeta de descargas.</p>
             </div>
 
             <!-- FORMULARIO -->
             <form id="ritmosForm" action="https://formsubmit.co/whitecactusbcn@gmail.com" method="POST" class="space-y-6 text-left">
                 
-                <!-- Campos ocultos de configuración -->
                 <input type="hidden" name="_subject" value="Nuevo Lead RITMOS: Solicitud de Guía">
                 <input type="hidden" name="_captcha" value="false">
                 <input type="hidden" name="_template" value="table">
-                <!-- Este campo evita redirecciones automáticas y nos permite manejarlo con JS -->
-                <input type="hidden" name="_next" value=""> 
+                
+                <!-- Enlace de descarga directa de tu Google Drive -->
+                <input type="hidden" name="_next" id="pdfLink" value="https://drive.google.com/uc?export=download&id=1s2VBmf9vmtnVOPz8w49iSREv0j_WmVWu"> 
 
                 <div>
                     <label for="name" class="block text-xs uppercase tracking-widest text-gray-500 mb-1">Nombre</label>
@@ -148,24 +148,22 @@
 
     </div>
 
-    <!-- SCRIPT PARA EVITAR EL BLOQUEO Y DAR FEEDBACK -->
+    <!-- SCRIPT DE ENVÍO -->
     <script>
         const form = document.getElementById('ritmosForm');
         const successMessage = document.getElementById('success-message');
         const submitBtn = document.getElementById('submitBtn');
         const btnText = submitBtn.querySelector('span');
+        const pdfUrl = document.getElementById('pdfLink').value;
 
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Evita que la página se recargue o se vaya a blanco
+            e.preventDefault(); 
 
-            // 1. Estado de "Cargando"
             submitBtn.disabled = true;
-            btnText.textContent = "Enviando...";
+            btnText.textContent = "Procesando...";
             
-            // Recoger datos
             const formData = new FormData(form);
 
-            // 2. Enviar datos en segundo plano (Fetch)
             fetch("https://formsubmit.co/ajax/whitecactusbcn@gmail.com", {
                 method: "POST",
                 headers: { 
@@ -176,15 +174,16 @@
             })
             .then(response => response.json())
             .then(data => {
-                // 3. Éxito: Ocultar form y mostrar mensaje
                 form.style.display = 'none';
                 successMessage.classList.remove('hidden');
-                console.log("Enviado correctamente", data);
+                
+                // Iniciamos la descarga directa
+                setTimeout(() => {
+                    window.location.href = pdfUrl;
+                }, 1500);
             })
             .catch(error => {
-                // Error: Mostrar alerta y restaurar botón
-                console.error("Error:", error);
-                alert("Hubo un pequeño problema al enviar. Por favor intenta de nuevo.");
+                alert("Hubo un error. Por favor intenta de nuevo.");
                 submitBtn.disabled = false;
                 btnText.textContent = "Recibir la Guía";
             });
@@ -193,4 +192,3 @@
 
 </body>
 </html>
-
