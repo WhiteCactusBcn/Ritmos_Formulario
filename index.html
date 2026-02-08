@@ -5,34 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenidxs a RITMOS</title>
     
-    <!-- Fuentes Elegantes (Google Fonts) para igualar el estilo del dossier -->
+    <!-- Fuentes Elegantes (Google Fonts) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS para estructura rápida -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Configuración de estilos personalizados -->
+    <!-- Configuración de estilos -->
     <style>
         :root {
-            --color-bg: #F9F7F2; /* Crema suave / Papel */
-            --color-text: #2C2C2C; /* Carbón suave */
-            --color-accent: #6B705C; /* Verde Oliva apagado */
+            --color-bg: #F9F7F2; 
+            --color-text: #2C2C2C; 
+            --color-accent: #6B705C; 
             --color-accent-dark: #4A4E40;
         }
 
         body {
             background-color: var(--color-bg);
             color: var(--color-text);
-            font-family: 'Montserrat', sans-serif; /* Texto cuerpo limpio */
+            font-family: 'Montserrat', sans-serif;
         }
 
         h1, h2, h3 {
-            font-family: 'Cormorant Garamond', serif; /* Títulos estilo editorial */
+            font-family: 'Cormorant Garamond', serif;
         }
 
-        /* Estilo sutil para los inputs */
         .custom-input {
             background-color: transparent;
             border-bottom: 1px solid #A5A58D;
@@ -43,7 +42,6 @@
             border-bottom: 1px solid var(--color-accent);
         }
 
-        /* Botón elegante */
         .btn-submit {
             background-color: var(--color-accent);
             letter-spacing: 0.1em;
@@ -52,31 +50,32 @@
         .btn-submit:hover {
             background-color: var(--color-accent-dark);
         }
-
-        /* Animación suave de entrada */
-        .fade-in {
-            animation: fadeIn 1.5s ease-in-out;
+        .btn-submit:disabled {
+            background-color: #A5A58D;
+            cursor: not-allowed;
         }
 
+        .fade-in { animation: fadeIn 1.5s ease-in-out; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
+        /* Ocultar elementos */
+        .hidden { display: none; }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col items-center justify-center p-4 sm:p-0">
 
     <div class="max-w-md w-full bg-[#F9F7F2] sm:shadow-xl sm:my-10 overflow-hidden fade-in relative">
         
-        <!-- IMAGEN SUPERIOR (Hero) -->
+        <!-- IMAGEN SUPERIOR -->
         <div class="w-full h-64 overflow-hidden relative">
-            <!-- CAMBIO 1: Nombre de archivo actualizado a foto1.png -->
             <img src="foto1.png" 
                  alt="Ritmos Naturaleza" 
                  class="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-700"
                  onerror="this.style.display='none'; document.getElementById('placeholder-1').style.display='flex';">
             
-            <!-- Fallback por si la imagen no carga -->
             <div id="placeholder-1" class="hidden w-full h-full bg-gray-200 items-center justify-center text-gray-400">
                 <span class="text-xs">foto1.png no encontrada</span>
             </div>
@@ -93,45 +92,43 @@
                 La casa cambia cuando cambia la forma en que la habitas. Deja tus datos para recibir la <strong>Guía Completa</strong> y comenzar tu viaje.
             </p>
 
-            <!-- FORMULARIO FORMSUBMIT.CO -->
-            <!-- CAMBIO 2: Correo actualizado a whitecactusbcn@gmail.com -->
-            <form action="https://formsubmit.co/whitecactusbcn@gmail.com" method="POST" class="space-y-6 text-left">
+            <!-- MENSAJE DE ÉXITO (Oculto al principio) -->
+            <div id="success-message" class="hidden py-10 fade-in">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-[#6B705C] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 class="text-3xl italic text-[#2C2C2C] mb-2">¡Gracias!</h3>
+                <p class="text-sm text-gray-600">Hemos recibido tus datos correctamente.<br>Revisa tu correo pronto.</p>
+            </div>
+
+            <!-- FORMULARIO -->
+            <form id="ritmosForm" action="https://formsubmit.co/whitecactusbcn@gmail.com" method="POST" class="space-y-6 text-left">
                 
-                <!-- Configuración oculta de FormSubmit -->
+                <!-- Campos ocultos de configuración -->
                 <input type="hidden" name="_subject" value="Nuevo Lead RITMOS: Solicitud de Guía">
                 <input type="hidden" name="_captcha" value="false">
                 <input type="hidden" name="_template" value="table">
-                <!-- Redirección opcional (puedes poner tu web o instagram aquí) -->
-                <!-- <input type="hidden" name="_next" value="https://tuweb.com/gracias"> -->
+                <!-- Este campo evita redirecciones automáticas y nos permite manejarlo con JS -->
+                <input type="hidden" name="_next" value=""> 
 
-                <!-- Nombre -->
                 <div>
                     <label for="name" class="block text-xs uppercase tracking-widest text-gray-500 mb-1">Nombre</label>
-                    <input type="text" name="name" required 
-                           class="custom-input w-full py-2 text-lg text-[#2C2C2C] placeholder-gray-300"
-                           placeholder="Tu nombre">
+                    <input type="text" name="name" required class="custom-input w-full py-2 text-lg text-[#2C2C2C] placeholder-gray-300" placeholder="Tu nombre">
                 </div>
 
-                <!-- Apellido -->
                 <div>
                     <label for="lastname" class="block text-xs uppercase tracking-widest text-gray-500 mb-1">Apellido</label>
-                    <input type="text" name="lastname" required 
-                           class="custom-input w-full py-2 text-lg text-[#2C2C2C] placeholder-gray-300"
-                           placeholder="Tu apellido">
+                    <input type="text" name="lastname" required class="custom-input w-full py-2 text-lg text-[#2C2C2C] placeholder-gray-300" placeholder="Tu apellido">
                 </div>
 
-                <!-- Correo -->
                 <div>
                     <label for="email" class="block text-xs uppercase tracking-widest text-gray-500 mb-1">Correo Electrónico</label>
-                    <input type="email" name="email" required 
-                           class="custom-input w-full py-2 text-lg text-[#2C2C2C] placeholder-gray-300"
-                           placeholder="ejemplo@correo.com">
+                    <input type="email" name="email" required class="custom-input w-full py-2 text-lg text-[#2C2C2C] placeholder-gray-300" placeholder="ejemplo@correo.com">
                 </div>
 
-                <!-- Botón -->
                 <div class="pt-4">
-                    <button type="submit" class="btn-submit w-full text-white font-medium py-3 px-4 uppercase text-xs rounded-sm shadow-md hover:shadow-lg transform transition">
-                        Recibir la Guía
+                    <button type="submit" id="submitBtn" class="btn-submit w-full text-white font-medium py-3 px-4 uppercase text-xs rounded-sm shadow-md hover:shadow-lg transform transition flex justify-center items-center gap-2">
+                        <span>Recibir la Guía</span>
                     </button>
                 </div>
             </form>
@@ -141,9 +138,8 @@
             </p>
         </div>
 
-        <!-- IMAGEN INFERIOR (Detalle) -->
+        <!-- IMAGEN INFERIOR -->
         <div class="w-full h-40 overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-700">
-            <!-- CAMBIO 3: Nombre de archivo actualizado a foto2.png -->
             <img src="foto2.png" 
                  alt="Detalle Naturaleza" 
                  class="w-full h-full object-cover"
@@ -151,6 +147,49 @@
         </div>
 
     </div>
+
+    <!-- SCRIPT PARA EVITAR EL BLOQUEO Y DAR FEEDBACK -->
+    <script>
+        const form = document.getElementById('ritmosForm');
+        const successMessage = document.getElementById('success-message');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = submitBtn.querySelector('span');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita que la página se recargue o se vaya a blanco
+
+            // 1. Estado de "Cargando"
+            submitBtn.disabled = true;
+            btnText.textContent = "Enviando...";
+            
+            // Recoger datos
+            const formData = new FormData(form);
+
+            // 2. Enviar datos en segundo plano (Fetch)
+            fetch("https://formsubmit.co/ajax/whitecactusbcn@gmail.com", {
+                method: "POST",
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(Object.fromEntries(formData))
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 3. Éxito: Ocultar form y mostrar mensaje
+                form.style.display = 'none';
+                successMessage.classList.remove('hidden');
+                console.log("Enviado correctamente", data);
+            })
+            .catch(error => {
+                // Error: Mostrar alerta y restaurar botón
+                console.error("Error:", error);
+                alert("Hubo un pequeño problema al enviar. Por favor intenta de nuevo.");
+                submitBtn.disabled = false;
+                btnText.textContent = "Recibir la Guía";
+            });
+        });
+    </script>
 
 </body>
 </html>
