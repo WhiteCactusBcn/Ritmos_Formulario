@@ -70,15 +70,12 @@
     <div class="max-w-md w-full bg-[#F9F7F2] sm:shadow-xl sm:my-10 overflow-hidden fade-in relative">
         
         <!-- IMAGEN SUPERIOR -->
+        <!-- Nota: Asegúrate de que 'foto1.png' esté en la misma carpeta o usa una URL completa -->
         <div class="w-full h-64 overflow-hidden relative">
             <img src="foto1.png" 
                  alt="Ritmos Naturaleza" 
                  class="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-700"
-                 onerror="this.style.display='none'; document.getElementById('placeholder-1').style.display='flex';">
-            
-            <div id="placeholder-1" class="hidden w-full h-full bg-gray-200 items-center justify-center text-gray-400">
-                <span class="text-xs">foto1.png no encontrada</span>
-            </div>
+                 onerror="this.parentElement.style.backgroundColor='#E5E7EB'; this.style.display='none';">
         </div>
 
         <!-- CONTENIDO -->
@@ -88,28 +85,37 @@
             <h1 class="text-5xl mb-6 font-normal text-[#2C2C2C] italic">RITMOS</h1>
             
             <p class="text-gray-600 mb-8 font-light leading-relaxed text-sm">
-                Bienvenidxs. <br>
+                <br>
                 La casa cambia cuando cambia la forma en que la habitas. Deja tus datos para recibir la <strong>Guía Completa</strong> y comenzar tu viaje.
             </p>
 
-            <!-- MENSAJE DE ÉXITO -->
+            <!-- MENSAJE DE ÉXITO (Se muestra tras enviar) -->
             <div id="success-message" class="hidden py-10 fade-in">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-[#6B705C] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <h3 class="text-3xl italic text-[#2C2C2C] mb-2">¡Gracias!</h3>
-                <p class="text-sm text-gray-600">Estamos preparando tu descarga...<br>Si no se abre en unos segundos, revisa tu carpeta de descargas.</p>
+                <p class="text-sm text-gray-600">
+                    Tu guía se está descargando automáticamente.<br>
+                    <span class="text-xs text-gray-400">(Revisa tu carpeta de descargas)</span>
+                </p>
+                <!-- Botón de respaldo por si el navegador bloquea la descarga automática -->
+                <a id="manualDownloadLink" href="#" class="mt-4 inline-block text-xs text-[#6B705C] underline hover:text-[#4A4E40]">
+                    ¿No se descargó? Haz clic aquí.
+                </a>
             </div>
 
             <!-- FORMULARIO -->
             <form id="ritmosForm" action="https://formsubmit.co/whitecactusbcn@gmail.com" method="POST" class="space-y-6 text-left">
                 
+                <!-- Configuración de FormSubmit -->
                 <input type="hidden" name="_subject" value="Nuevo Lead RITMOS: Solicitud de Guía">
                 <input type="hidden" name="_captcha" value="false">
                 <input type="hidden" name="_template" value="table">
                 
-                <!-- Enlace de descarga directa de tu Google Drive -->
-                <input type="hidden" name="_next" id="pdfLink" value="https://drive.google.com/uc?export=download&id=1s2VBmf9vmtnVOPz8w49iSREv0j_WmVWu"> 
+                <!-- ID DE DESCARGA DIRECTA DE GOOGLE DRIVE (IMPORTANTE) -->
+                <!-- El ID es: 1s2VBmf9vmtnVOPz8w49iSREv0j_WmVWu -->
+                <input type="hidden" id="pdfUrlInput" value="https://drive.google.com/uc?export=download&id=1s2VBmf9vmtnVOPz8w49iSREv0j_WmVWu"> 
 
                 <div>
                     <label for="name" class="block text-xs uppercase tracking-widest text-gray-500 mb-1">Nombre</label>
@@ -143,27 +149,32 @@
             <img src="foto2.png" 
                  alt="Detalle Naturaleza" 
                  class="w-full h-full object-cover"
-                 onerror="this.style.display='none';">
+                 onerror="this.parentElement.style.backgroundColor='#E5E7EB'; this.style.display='none';">
         </div>
 
     </div>
 
-    <!-- SCRIPT DE ENVÍO -->
+    <!-- SCRIPT DE ENVÍO Y DESCARGA -->
     <script>
         const form = document.getElementById('ritmosForm');
         const successMessage = document.getElementById('success-message');
         const submitBtn = document.getElementById('submitBtn');
         const btnText = submitBtn.querySelector('span');
-        const pdfUrl = document.getElementById('pdfLink').value;
+        
+        // Obtenemos la URL directa
+        const pdfUrl = document.getElementById('pdfUrlInput').value;
+        const manualLink = document.getElementById('manualDownloadLink');
 
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); 
+            e.preventDefault(); // Evita que la página se recargue
 
+            // Feedback visual de carga
             submitBtn.disabled = true;
             btnText.textContent = "Procesando...";
             
             const formData = new FormData(form);
 
+            // Enviamos los datos a FormSubmit mediante AJAX
             fetch("https://formsubmit.co/ajax/whitecactusbcn@gmail.com", {
                 method: "POST",
                 headers: { 
@@ -174,16 +185,28 @@
             })
             .then(response => response.json())
             .then(data => {
+                // 1. Ocultar formulario y mostrar mensaje de éxito
                 form.style.display = 'none';
                 successMessage.classList.remove('hidden');
                 
-                // Iniciamos la descarga directa
+                // 2. Configurar el enlace manual por si acaso
+                manualLink.href = pdfUrl;
+
+                // 3. Forzar la descarga automática después de 1 segundo
                 setTimeout(() => {
-                    window.location.href = pdfUrl;
-                }, 1500);
+                    // Método más seguro para descargar sin salir de la página
+                    const link = document.createElement('a');
+                    link.href = pdfUrl;
+                    link.setAttribute('download', 'Guia_Ritmos.pdf'); // Intenta forzar el nombre
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }, 1000);
             })
             .catch(error => {
-                alert("Hubo un error. Por favor intenta de nuevo.");
+                console.error('Error:', error);
+                alert("Hubo un pequeño error al enviar los datos. Por favor intenta de nuevo.");
                 submitBtn.disabled = false;
                 btnText.textContent = "Recibir la Guía";
             });
